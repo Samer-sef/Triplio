@@ -1,8 +1,5 @@
 const router = require("express").Router();
-const UsersController = require('../../controllers/Users');
 
-
-router.post("/users/register", UsersController.register);
-router.post("/users/login", UsersController.login);
+//TODO:: complete the users APIS, dont forget to use verifyJWT function
 
 module.exports = router;

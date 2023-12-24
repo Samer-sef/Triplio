@@ -5,10 +5,13 @@ const UserSchema = new mongoose.Schema(
         email: {type: String, required: true, unique: true},
         username: {type: String, required: true, unique: true},
         password: {type: String, required: true},
-        is_admin: {type: Boolean, default: false},
-        refresh_token: {type: String, required: true, unique: true},
+        refresh_token: [String],
+        roles: {
+            User: {type: Number, default: 123},
+            Admin: {type: Number},
+        },
     },
-    { collection: 'users' }
+    { collection: 'users', timestamps: true }
 )
 
 const model = mongoose.model('UserSchema', UserSchema)
