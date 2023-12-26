@@ -6,7 +6,7 @@ const handleNewUser = async (req, res) => {
     // Add a library to do more checks for password/username/email length/username format
     if (!username || !email || !plainPassword) return res.status(400).json({ 'message': 'Username, email and password are required.' });
 
-    const isDuplicate = await User.findOne({ username }).exec();
+    const isDuplicate = await User.findOne({ email }).exec();
     if (isDuplicate) return res.sendStatus(409);
 
     try {
