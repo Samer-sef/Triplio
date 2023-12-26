@@ -33,4 +33,4 @@ connect_to_db()
 //TODO:: run the server AFTER db connection is successful
 const port = process.env.PORT || 5000
 const address = process.env.SERVER_ADDRESS || "127.0.0.1"
-app.listen(port, address, () => console.log('Server started!'))
+app.listen(port, address, () => console.log('Server started!', port))

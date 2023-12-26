@@ -50,19 +50,19 @@ const handleRefreshToken = async (req, res) => {
                     }
                 },
                 process.env.JWT_TOKEN_KEY,
-                { expiresIn: '10s' }
+                { expiresIn: '24h' }
             );
 
             const newRefreshToken = jwt.sign(
                 { "email": foundUser.email },
                 process.env.JWT_REFRESH_TOKEN_KEY,
-                { expiresIn: '15s' }
+                { expiresIn: '14d' }
             );
 
             foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
             const result = await foundUser.save();
 
-            res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
             res.json({ accessToken })
         }
     );
