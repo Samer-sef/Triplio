@@ -1,29 +1,33 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import AppLayout from './components/AppLayout'
 import Public from './components/Public'
-import Login from './features/auth/Login'
-import Register from './features/auth/Register'
+import LoginRegisterForm from './features/auth/LoginRegisterForm'
 import Welcome from './features/auth/Welcome'
 import RequireAuth from './features/auth/RequireAuth'
 import PersistLogin from './features/auth/PersistLogin'
+
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
+        <Route element={<AppLayout />}>
+            {/* public routes */}
+            <Route path="register" element={<LoginRegisterForm />} />
+            <Route path="login" element={<LoginRegisterForm />} />
 
-        {/* public routes */}
-        <Route index element={<Public />} />
-        <Route path="register" element={<Register />} />
-        <Route path="login" element={<Login />} />
+            {/* persisted login state routes */}
+            <Route element={<PersistLogin />}>
+              <Route index element={<Public />} />
 
-        {/* protected routes */}
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth />}>
-            <Route path="welcome" element={<Welcome />} />
-          </Route>
+              {/* protected and persisted login state routes*/}
+              <Route element={<RequireAuth />}>
+                <Route path="welcome" element={<Welcome />} />
+              </Route>
+            </Route>
+
         </Route>
-
       </Route>
     </Routes>
   )

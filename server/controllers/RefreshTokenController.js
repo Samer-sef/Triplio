@@ -42,6 +42,7 @@ const handleRefreshToken = async (req, res) => {
 
             // Refresh token was still valid
             const roles = Object.values(foundUser.roles);
+            const username = foundUser.username
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
@@ -63,7 +64,7 @@ const handleRefreshToken = async (req, res) => {
             const result = await foundUser.save();
 
             res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-            res.json({ accessToken })
+            res.json({ accessToken, username })
         }
     );
 }

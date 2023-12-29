@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "./authSlice"
 
 const PersistLogin = () => {
-    // If user enabled 'remeber me' option then 
+    // If user enabled 'remeber me' option then send a refresh request to server.
 
     const [persist] = usePersist()
     const token = useSelector(selectCurrentToken)
@@ -60,7 +60,7 @@ const PersistLogin = () => {
         content = (
             <p className='errmsg'>
                 {error?.data?.message}
-                <Link to="/login">Please login again</Link>.
+                <Link to="/login">Please login again</Link>
             </p>
         )
     } else if (isSuccess && trueSuccess) { //persist: yes, token: yes

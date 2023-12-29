@@ -10,11 +10,12 @@ const handleLogin = async (req, res) => {
 
     const foundUser = await User.findOne({ email }).exec();
     if (!foundUser) return res.sendStatus(401); //Unauthorized 
-    // evaluate password 
+    // evaluate password
     const match = await bcrypt.compare(password, foundUser.password);
     if(!match) return res.sendStatus(401);
 
     const roles = Object.values(foundUser.roles).filter(Boolean);
+    const username = foundUser.username
     const accessToken = jwt.sign(
         {
             "UserInfo": {
@@ -41,7 +42,7 @@ const handleLogin = async (req, res) => {
     const result = await foundUser.save();
 
     res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-    res.json({ accessToken });
+    res.json({ accessToken, username });
 }
 
 module.exports = { handleLogin };
