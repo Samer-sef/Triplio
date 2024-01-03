@@ -12,6 +12,7 @@ router.use((err, req, res, next) => {
 
 router.use("/api", require("./api/auth"));
 router.use("/api", require("./api/users"));
+router.use("/api", require("./api/trips"));
 
 
 module.exports = router;
