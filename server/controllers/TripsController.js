@@ -21,10 +21,15 @@ const CreateTrip = async (req, res) => {
 
 const GetAllTrips = async (req, res) => {
     try {
-        
-        const skip = req.query.skip && /^\d+$/.test(req.query.skip) ? Number(req.query.skip) : 0
 
-        const trips = await Trip.find({}, undefined, { skip, limit: 5 }).sort({createdAt: -1}) //TODO:: Make limit env var.
+        const {limit, page} = req.query
+        if(!limit || !page) return res.status(400).json({ message: 'Both limit, page are required' })
+
+        const skip = limit * page
+        
+        const skipValidated = skip && /^\d+$/.test(skip) ? Number(skip) : 0
+
+        const trips = await Trip.find({}, undefined, { skip: skipValidated, limit }).sort({createdAt: -1}) //TODO:: Make limit env var.
 
         if (!trips?.length) {
             return res.status(400).json({ message: 'No trips found' })
