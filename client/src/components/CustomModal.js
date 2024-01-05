@@ -4,7 +4,6 @@ import { Modal, DialogContent, DialogTitle, IconButton, Box } from "@mui/materia
 
 import { useNavigate } from 'react-router-dom'
 
-
 const style = {
     position: 'absolute',
     top: '50%',
@@ -21,7 +20,7 @@ const style = {
 };
 
 export default function BasicModal({Content, title}) {
-    
+  const [open, setOpen] = React.useState(false);
   const closeModal = () => setOpen(false);
   const navigate = useNavigate();
   const handleClose = () => {

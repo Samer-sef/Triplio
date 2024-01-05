@@ -43,7 +43,7 @@ const Home = () => {
     
 
 if(isSuccess){
-
+    const { count, trips } = data
     return(
         <Grid container>
             <Box 
