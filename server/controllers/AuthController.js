@@ -19,15 +19,15 @@ const handleLogin = async (req, res) => {
     const accessToken = jwt.sign(
         {
             "UserInfo": {
-                "email": foundUser.email,
-                "roles": roles,
+                email,
+                roles,
             }
         },
         process.env.JWT_TOKEN_KEY,
         { expiresIn: '24h' }
     );
     const newRefreshToken = jwt.sign(
-        { "email": foundUser.email },
+        { email },
         process.env.JWT_REFRESH_TOKEN_KEY,
         { expiresIn: '14d' }
     );
@@ -42,7 +42,7 @@ const handleLogin = async (req, res) => {
     const result = await foundUser.save();
 
     res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-    res.json({ accessToken, username });
+    res.json({ accessToken, username, email });
 }
 
 module.exports = { handleLogin };

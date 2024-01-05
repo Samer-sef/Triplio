@@ -40,14 +40,16 @@ const handleRefreshToken = async (req, res) => {
             }
             if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
 
+            let email = foundUser.email
+
             // Refresh token was still valid
             const roles = Object.values(foundUser.roles);
             const username = foundUser.username
             const accessToken = jwt.sign(
                 {
                     "UserInfo": {
-                        "email": decoded.email,
-                        "roles": roles
+                        email,
+                        roles
                     }
                 },
                 process.env.JWT_TOKEN_KEY,
@@ -55,7 +57,7 @@ const handleRefreshToken = async (req, res) => {
             );
 
             const newRefreshToken = jwt.sign(
-                { "email": foundUser.email },
+                { email },
                 process.env.JWT_REFRESH_TOKEN_KEY,
                 { expiresIn: '14d' }
             );
@@ -64,7 +66,7 @@ const handleRefreshToken = async (req, res) => {
             const result = await foundUser.save();
 
             res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-            res.json({ accessToken, username })
+            res.json({ accessToken, username, email })
         }
     );
 }

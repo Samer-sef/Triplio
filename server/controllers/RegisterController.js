@@ -12,7 +12,7 @@ const handleNewUser = async (req, res) => {
 
     try {
         const newRefreshToken = jwt.sign(
-            { "email": email },
+            { email },
             process.env.JWT_REFRESH_TOKEN_KEY,
             { expiresIn: '14d' }
         );
@@ -28,7 +28,7 @@ const handleNewUser = async (req, res) => {
         const accessToken = jwt.sign(
             {
                 "UserInfo": {
-                    "email": createdUser.email,
+                    email,
                     "roles": createdUser.roles,
                 }
             },
@@ -38,7 +38,7 @@ const handleNewUser = async (req, res) => {
 
         console.log(createdUser);
         res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-        res.json({ accessToken, username });
+        res.json({ accessToken, username, email });
     } catch (err) {
         console.log(err);
         res.status(500).json({ 'message': err.message });

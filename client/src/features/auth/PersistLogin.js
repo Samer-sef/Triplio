@@ -5,7 +5,7 @@ import usePersist from "../../hooks/usePersist"
 import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "./authSlice"
 
-const PersistLogin = () => {
+const PersistLogin = ({showPageEvenIfNotLoggedIn}) => {
     // If user enabled 'remeber me' option then send a refresh request to server.
 
     const [persist] = usePersist()
@@ -39,10 +39,8 @@ const PersistLogin = () => {
                     console.error(err)
                 }
             }
-
             if (!token && persist) verifyRefreshToken()
         }
-
         return () => effectRan.current = true
 
         // eslint-disable-next-line
@@ -50,7 +48,9 @@ const PersistLogin = () => {
 
 
     let content
-    if (!persist) { // persist: no
+    if(showPageEvenIfNotLoggedIn){
+        content = <Outlet />
+    }else if (!persist) { // persist: no
         console.log('no persist')
         content = <Outlet />
     } else if (isLoading) { //persist: yes, token: no

@@ -11,7 +11,8 @@ const verifyJWT = (req, res, next) => {
         process.env.JWT_TOKEN_KEY,
         (err, decoded) => {
             if (err) return res.sendStatus(403); //invalid token
-            req.user = decoded.UserInfo.username;
+            req.email = decoded.UserInfo.email;
+            req.username = decoded.UserInfo.username;
             req.roles = decoded.UserInfo.roles;
             next();
         }
