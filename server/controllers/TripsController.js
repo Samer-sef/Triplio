@@ -1,4 +1,5 @@
 const Trip = require('../models/trip');
+const mongoose = require('mongoose')
 
 
 const CreateTrip = async (req, res) => {
@@ -20,18 +21,22 @@ const CreateTrip = async (req, res) => {
 
 const GetAllTrips = async (req, res) => {
     try {
+        
         const skip = req.query.skip && /^\d+$/.test(req.query.skip) ? Number(req.query.skip) : 0
 
-        const trips = await Trip.find({}, undefined, { skip, limit: 5 }) //TODO:: Make limit env var.
+        const trips = await Trip.find({}, undefined, { skip, limit: 5 }).sort({createdAt: -1}) //TODO:: Make limit env var.
 
         if (!trips?.length) {
             return res.status(400).json({ message: 'No trips found' })
         }
 
-        res.status(200).send(trips)
-
+        // Include the num of docs in the collection in the response.
+        let count = await Trip.countDocuments({})
+        res.status(200).send({trips, count})
+       
     } catch (e) {
-        return res.status(400).json({ message: 'Invalid args received' })
+        console.log('error', e)
+        return res.status(400).json({ message: 'Invalid args received: ' + e })
     }
 }
 
