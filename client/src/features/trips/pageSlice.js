@@ -1,22 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit"
 
+const initialState = { page: 0 }
 
 const pageSlice = createSlice({
     name: 'pageNum',
-    initialState: { page: 0, isCreateTripCall: false },
+    initialState: initialState,
     reducers: {
         setPage: (state, action) => {
-            const { page, isCreateTripCall } = action.payload
+            const { page } = action.payload
             state.page = page
-            state.isCreateTripCall = isCreateTripCall
         },
+        resetPage: () => initialState,
     },
 })
 
 
-export const { setPage } = pageSlice.actions
+export const { setPage,resetPage } = pageSlice.actions
 
 export default pageSlice.reducer
 
 export const selectPage = (state) => state.pageNum.page
-export const selectIsCreateTripCall = (state) => state.pageNum.isCreateTripCall

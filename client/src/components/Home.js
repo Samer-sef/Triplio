@@ -11,7 +11,7 @@ import { useNavigate, Outlet } from 'react-router-dom'
 import { useGetTripsQuery } from "../features/trips/tripApiSlice"
 import { useSelector } from "react-redux"
 import { useDispatch } from 'react-redux'
-import { selectPage, setPage, selectIsCreateTripCall } from '../features/trips/pageSlice'
+import { selectPage, setPage } from '../features/trips/pageSlice'
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 
