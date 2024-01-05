@@ -56,7 +56,7 @@ const Home = () => {
                         justifyContent="center"
                         xs={11}
                         md={5}
-                        mt={5}
+                        pt={5}
                     >
                     {
                         !isLoading && 
@@ -65,6 +65,7 @@ const Home = () => {
                                 next={() => dispatch(setPage({page: page+1}))}
                                 hasMore={trips.length < count}
                                 loader={'loading...'}
+                                endMessage='No More Trips!'
                             >
                                 {trips.map((trip) => (
                                     <TripCard trip={trip}/>

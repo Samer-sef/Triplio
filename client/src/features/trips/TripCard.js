@@ -11,8 +11,8 @@ export default function TripCard({trip}) {
     const {name, description, location, length, date, rating} = trip
 
     return (
-        <Paper style={{background: '#f9f9f9', width: '100%'}} sx={{ borderRadius: 2, marginBottom: 2 }}>
-            <Grid container direction="row" justifyContent="flex-start" alignItems="center" p={2}>
+        <Paper style={{background: '#f9f9f9'}} sx={{ borderRadius: 2, marginBottom: 2}}>
+            <Grid width='100vh' container direction="row" justifyContent="flex-start" alignItems="center" p={2}>
                 <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 2, justifySelf: 'auto' }} />
                 <Stack spacing={0}>
                     <Typography>{name + ' - ' + date}</Typography>

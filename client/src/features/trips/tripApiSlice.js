@@ -3,7 +3,6 @@ import {
     createEntityAdapter
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice"
-import { setPage } from './pageSlice'
 
 
 const tripsAdapter = createEntityAdapter()
@@ -13,7 +12,7 @@ export const tripApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getTrips: builder.query({
             query: (args) => ({
-                url: `/trips?skip=${args.page * 5}`,
+                url: `/trips?page=${args.page}&limit=${10}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
