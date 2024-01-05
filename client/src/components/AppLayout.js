@@ -5,7 +5,7 @@ const AppLayout = (props) => {
     return (
         <div>
             <NavBar />
-            <Outlet />
+            <Outlet height="100vh"/>
         </div>
     )
 }

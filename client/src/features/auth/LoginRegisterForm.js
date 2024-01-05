@@ -52,16 +52,16 @@ const LoginRegisterForm = () => {
 
     const proccessLogin = async () => {
         const userData = await login({ email, password }).unwrap()
-        dispatch(setCredentials({ ...userData }))
         resetState()
+        dispatch(setCredentials({ ...userData }))
         navigate('/')
     }
 
     const proccessRegister = async () => {
         const username = firstname + ' ' + lastname
         const userData = await register({ email, username, password }).unwrap()
-        dispatch(setCredentials({ ...userData }))
         resetState()
+        dispatch(setCredentials({ ...userData }))
         navigate('/')
     }
 
@@ -92,15 +92,15 @@ const LoginRegisterForm = () => {
     const titleText = isLogin? 'Login' : 'Register'
 
     const RenderForm = (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} mt={1}>
             {!isLogin &&
                 <Fragment>
                     <Grid item xs={12} md={6}>
                         <TextField
                             fullWidth
+                            autoFocus={true}
                             onChange={handleFirstnameInput}
                             required
-                            inputRef={userRef}
                             id="outlined-firstname-input"
                             label="First Name"
                             type="text"
@@ -122,6 +122,7 @@ const LoginRegisterForm = () => {
                 <TextField
                     fullWidth
                     onChange={handleEmailInput}
+                    autoFocus={isLogin}
                     required
                     id="outlined-email-input"
                     label="Email"
@@ -152,7 +153,7 @@ const LoginRegisterForm = () => {
                     fullWidth
                     variant="contained"
                     onClick={handleSubmit}
-                    >
+                >
                     {titleText}
                 </Button>
             </Grid>
