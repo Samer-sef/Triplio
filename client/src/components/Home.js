@@ -18,8 +18,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Home = () => {
 
-    let page = useSelector(selectPage)
-    let isCreateTripCall = useSelector(selectIsCreateTripCall)
+    const page = useSelector(selectPage)
     
     const {
         data,
@@ -28,7 +27,7 @@ const Home = () => {
         isSuccess,
         isError,
         error
-    } = useGetTripsQuery({page, isCreateTripCall}, {
+    } = useGetTripsQuery({page}, {
         // pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
@@ -42,41 +41,44 @@ const Home = () => {
     }
     
 
-if(isSuccess){
-    const { count, trips } = data
-    return(
-        <Grid container>
-            <Box 
-                sx={{ width: '100%', height: '100%' }}
-                display="flex"
-                justifyContent="center"
-            >
-                <Grid
-                    item
+    if(isSuccess){
+        const { count, trips } = data
+        return(
+            <Grid container>
+                <Box 
+                    sx={{ width: '100%', height: '100%' }}
                     display="flex"
                     justifyContent="center"
-                    xs={11}
-                    md={5}
-                    mt={5}
                 >
+                    <Grid
+                        item
+                        display="flex"
+                        justifyContent="center"
+                        xs={11}
+                        md={5}
+                        mt={5}
+                    >
+                    {
+                        !isLoading && 
+                            <InfiniteScroll
+                                dataLength={trips.length}
+                                next={() => dispatch(setPage({page: page+1}))}
+                                hasMore={trips.length < count}
+                                loader={'loading...'}
+                            >
+                                {trips.map((trip) => (
+                                    <TripCard trip={trip}/>
+                                ))}
+                        </InfiniteScroll>
+                    }
 
-                {!isLoading && <InfiniteScroll dataLength={trips?.length} next={() => dispatch(setPage({page: page+1, isCreateTripCall: false}))} hasMore={trips?.length < count} loader={'loading...'}>
-                    <ul className='bg-teal-500'>
-                    {trips.map((trip) => (
-                        <TripCard trip={trip}/>
-                    ))}
-                    </ul>
-                </InfiniteScroll>}
-
-                {isLoading === true && <>Loading</>}
-                </Grid>
-            </Box>
-            <CustomFab onClick={() => handleCreateTrip()}/>
-            <Outlet/>
-        </Grid>
-    )
+                    </Grid>
+                </Box>
+                <CustomFab onClick={() => handleCreateTrip()}/>
+                <Outlet/>
+            </Grid>
+        )
+    }
 }
-}
-
 
 export default Home

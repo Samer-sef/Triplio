@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { useAddNewTripMutation } from "./tripApiSlice"
 import { useSelector } from "react-redux"
 import { selectCurrentEmail } from "../auth/authSlice"
-import {setPage} from "../trips/pageSlice"
+import { setPage, selectPage } from "../trips/pageSlice"
 import { useDispatch } from 'react-redux'
 
 import CustomModal from '../../components/CustomModal'
@@ -19,6 +19,7 @@ export default function CreateTripForm(props) {
 
     const titleText = 'Create a trip: '
     const userEmail = useSelector(selectCurrentEmail)
+    const page = useSelector(selectPage)
 
     const [addNewNote, {
         isLoading,
@@ -49,7 +50,7 @@ export default function CreateTripForm(props) {
 
     const handleSubmit = async () => {
         await addNewNote({ name, destination, description, date, userEmail })
-        dispatch(setPage({ page: 0, isCreateTripCall: true })) //Send a signal to the getTrips query after reseting the page number.
+        dispatch(setPage({ page: page === 0 ? undefined : 0 })) //reset the page number and ensure the previous state != the next one.
     }
 
     const RenderForm = (
