@@ -10,6 +10,11 @@ import CustomModal from '../../components/CustomModal'
 
 import { Grid, TextField, Typography, Alert } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import dayjs from 'dayjs'
 
 
 export default function CreateTripForm() {
@@ -34,20 +39,20 @@ export default function CreateTripForm() {
     }, [isSuccess, navigate])
 
     const [name, setName] = useState('')
-    const [destination, setDestination] = useState('')
+    const [location, setLocation] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
 
     const handleTripNameInput = (e) => setName(e.target.value)
-    const handleDestinationInput = (e) => setDestination(e.target.value)
+    const handleLocationInput = (e) => setLocation(e.target.value)
     const handleDescriptionInput = (e) => setDescription(e.target.value)
-    const handleDateInput = (e) => setDate(e.target.value)
+    const handleDateInput = (date) => setDate(dayjs(date).format('MM/DD/YYYY'))
 
     const dispatch = useDispatch()
 
     const handleSubmit = async () => {
         try{
-            await addNewNote({ name, destination, description, date, userId })
+            await addNewNote({ name, location, description, date, userId })
         } catch (err) {
             console.log('CreateTripForm error', err)
         }
@@ -70,12 +75,12 @@ export default function CreateTripForm() {
             </Grid>
 
             <Grid item xs={12}>
-                <Typography id="modal-modal-title" variant="p" mb={0}>Destination</Typography>
+                <Typography id="modal-modal-title" variant="p" mb={0}>Location</Typography>
                 <TextField
                     fullWidth
-                    onChange={handleDestinationInput}
+                    onChange={handleLocationInput}
                     required
-                    id="outlined-destination-input"
+                    id="outlined-location-input"
                     placeholder="Where to?"
                     type="text"
                 />
@@ -97,15 +102,21 @@ export default function CreateTripForm() {
             </Grid>
 
             <Grid item xs={12}>
+                
+                {
+                //     <TextField
+                //     fullWidth
+                //     onChange={handleDateInput}
+                //     required
+                //     id="outlined-tripname-input"
+                //     placeholder="e.g., 2024/01/01"
+                //     type="text"
+                // />
+            }
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Typography id="modal-modal-title" variant="p" mb={0}>Trip date</Typography>
-                <TextField
-                    fullWidth
-                    onChange={handleDateInput}
-                    required
-                    id="outlined-tripname-input"
-                    placeholder="e.g., 2024/01/01"
-                    type="text"
-                />
+                    <DatePicker onChange={handleDateInput} slotProps={{ textField: { fullWidth: true } }}/>
+                </LocalizationProvider>
             </Grid>
 
             <Grid item xs={12} sx={{display: { xs: !isError && 'none' }}}>

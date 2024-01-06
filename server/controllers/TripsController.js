@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 const CreateTrip = async (req, res) => {
     const { name, description, location, length, date, rating, userId } = req.body
 
-    if (!name || !description || !date || !userId) {
+    if (!name || !description || !date || !userId || !location ) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
@@ -49,7 +49,7 @@ const GetAllTrips = async (req, res) => {
 const UpdateTrip = async (req, res) => {
     const { name, description, location, length, date, rating, id, userId } = req.body
 
-    if (!name || !description || !date || !userId) {
+    if (!name || !description || !date || !userId || !location) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 

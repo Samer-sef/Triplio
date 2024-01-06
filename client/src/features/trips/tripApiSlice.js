@@ -43,8 +43,8 @@ export const tripApiSlice = apiSlice.injectEndpoints({
             //     return tripsAdapter.setAll(initialState, responseData)
             // },
             providesTags: (result, error, arg) => {
-                let trips = result.trips
-                if (trips?.length) {
+                let trips = result?.trips
+                if (trips?.length > 0) {
                     let x = [
                         { type: 'Trip', id: 'LIST' },
                         ...trips.map(trip => ({ type: 'Trip', id: trip._id }))

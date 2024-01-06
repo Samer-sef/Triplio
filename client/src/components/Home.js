@@ -1,4 +1,4 @@
-import { Grid, Box, CircularProgress, Typography } from '@mui/material';
+import { Grid, Box, CircularProgress, Typography, Divider } from '@mui/material';
 
 import TripCard from '../features/trips/TripCard'
 import CustomFab from './CustomFab'
@@ -18,13 +18,12 @@ const Home = () => {
     
     const {
         data,
-        currentData,
         isLoading,
         isSuccess,
         isError,
         error
     } = useGetTripsQuery({page}, {
-        // pollingInterval: 15000,
+        pollingInterval: 60000 * 3, // Automatically refresh the trips on home page every 3 minutes.
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -33,59 +32,72 @@ const Home = () => {
     const dispatch = useDispatch()
 
     const handleCreateTrip = () => {
-        navigate(`/createTrip`) //TODO:: check for login
+        navigate(`/createTrip`)
     }
-    
+
+    let content
+
+    if(isLoading){
+        content = ('loading')
+    }
+
+    if(isError){
+        content = (<Typography p={3}>{error.data.message + ' :/'}</Typography>)
+    }
 
     if(isSuccess){
         const { count, trips } = data
-        return(
-            <Grid container>
-                <Box 
-                    sx={{ width: '100%', height: '100%' }}
+        content = (
+            <InfiniteScroll
+                dataLength={trips.length}
+                next={() => dispatch(setPage({page: page+1}))}
+                style={{overflow: 'hidden'}} //Bug fix for scrollbar that shows when scrolling fast.
+                hasMore={trips.length < count}
+                loader={
+                    <Box
+                        display="flex"
+                        justifyContent="center">
+                        <CircularProgress/>
+                    </Box>
+                }
+                endMessage={
+                    <Box pt={8}>
+                        <Divider variant="middle"/>
+                        <Typography p={3} sx={{textAlign: 'center'}}>No more trips to display!</Typography>
+                    </Box>
+                }
+            >
+                {trips.map((trip) => (
+                    <TripCard key={trip._id} trip={trip}/>
+                ))}
+            </InfiniteScroll>)
+    }
+    
+
+    return(
+        <Grid container>
+            <Box 
+                sx={{ width: '100%', height: '100%' }}
+                display="flex"
+                justifyContent="center"
+            >
+                <Grid
+                    item
                     display="flex"
                     justifyContent="center"
+                    xs={11}
+                    md={5}
+                    pt={5}
                 >
-                    <Grid
-                        item
-                        display="flex"
-                        justifyContent="center"
-                        xs={11}
-                        md={5}
-                        pt={5}
-                    >
-                    {
-                        !isLoading && 
-                            <InfiniteScroll
-                                dataLength={trips.length}
-                                next={() => dispatch(setPage({page: page+1}))}
-                                style={{overflow: 'hidden'}} //Bug fix for scrollbar that shows when scrolling fast.
-                                hasMore={trips.length < count}
-                                loader={
-                                    <Box
-                                        display="flex"
-                                        justifyContent="center"
-                                    >
-                                        <CircularProgress/>
-                                    </Box>
-                                }
-                                endMessage={
-                                    <Typography p={3} sx={{textAlign: 'center'}}>No more trips to display!</Typography>
-                                }
-                            >
-                                {trips.map((trip) => (
-                                    <TripCard key={trip._id} trip={trip}/>
-                                ))}
-                        </InfiniteScroll>
-                    }
 
-                    </Grid>
-                </Box>
-                <CustomFab onClick={() => handleCreateTrip()}/>
-                <Outlet/>
-            </Grid>
-        )
-    }
+                { content }
+
+                </Grid>
+            </Box>
+            <CustomFab onClick={() => handleCreateTrip()}/>
+            <Outlet/>
+        </Grid>
+    )
 }
 
 export default Home
