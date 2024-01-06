@@ -20,13 +20,13 @@ const style = {
 };
 
 export default function BasicModal({Content, title}) {
-  const [open, setOpen] = React.useState(false);
-  const closeModal = () => setOpen(false);
-  const navigate = useNavigate();
-  const handleClose = () => {
-    closeModal()
-    navigate('/')
-  }
+    const [open, setOpen] = React.useState(false);
+    const closeModal = () => setOpen(false);
+    const navigate = useNavigate();
+    const handleClose = () => {
+        closeModal()
+        navigate('/')
+    }
 
     return (
         <Modal

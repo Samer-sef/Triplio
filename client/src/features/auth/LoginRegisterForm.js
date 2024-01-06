@@ -15,6 +15,7 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 
 
 const LoginRegisterForm = () => {
@@ -30,10 +31,13 @@ const LoginRegisterForm = () => {
     const navigate = useNavigate()
     const location = useLocation();
 
-    const [login, { isLoading: isLoginLoading }] = useLoginMutation()
-    const [register, { isLoading: isRegisterLoading }] = useRegisterMutation()
+    const [login, { isLoading: isLoginLoading, isError: isLoginError, error: loginError }] = useLoginMutation()
+    const [register, { isLoading: isRegisterLoading, isError: isRegisterError, error: registerError }] = useRegisterMutation()
     const isLoading = isLoginLoading || isRegisterLoading
-    console.log('isLoadingisLoading', isLoading)
+    const isError = isLoginError || isRegisterError
+    const errorMessage = loginError || registerError
+    console.log('isError', isError)
+    console.log('errorMessage', errorMessage)
     const dispatch = useDispatch()
 
     const isLogin = location.pathname === '/login'
@@ -70,14 +74,15 @@ const LoginRegisterForm = () => {
 
     const handleSubmit = async (e) => {
         try {
-            isLogin ? proccessLogin() : proccessRegister()
+            isLogin ? await proccessLogin() : await proccessRegister()
         } catch (err) {
-            if (!err?.originalStatus) {
+            console.log('LoginRegisterForm error', err)
+            if (!err?.status) {
                 // isLoading: true until timeout occurs
                 setErrMsg('No Server Response');
-            } else if (err.originalStatus === 400) {
-                setErrMsg('Missing Username or Password');
-            } else if (err.originalStatus === 401) {
+            } else if (err.status === 400) {
+                setErrMsg('Missing one of the fields');
+            } else if (err.status === 401) {
                 setErrMsg('Unauthorized');
             } else {
                 setErrMsg('Login Failed');
@@ -96,6 +101,9 @@ const LoginRegisterForm = () => {
 
     const RenderForm = (
         <Grid container spacing={2} mt={1}>
+            <Grid item xs={12} sx={{display: { xs: !errMsg && 'none' }}}>
+                <Alert severity="error">{errMsg}</Alert>
+            </Grid>
             {!isLogin &&
                 <Fragment>
                     <Grid item xs={12} md={6}>

@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Alert from '@mui/material/Alert';
 
 
 export default function CreateTripForm() {
@@ -50,7 +51,12 @@ export default function CreateTripForm() {
     const dispatch = useDispatch()
 
     const handleSubmit = async () => {
-        await addNewNote({ name, destination, description, date, userEmail })
+        try{
+            await addNewNote({ name, destination, description, date, userEmail })
+        } catch (err) {
+            console.log('CreateTripForm error', err)
+        }
+        
         dispatch(setPage({ page: page === 0 ? undefined : 0 })) //reset the page number and ensure the previous state != the next one.
     }
 
@@ -107,6 +113,10 @@ export default function CreateTripForm() {
                 />
             </Grid>
 
+            <Grid item xs={12} sx={{display: { xs: !isError && 'none' }}}>
+                <Alert severity="error">{error?.data?.message}</Alert>
+            </Grid>
+
             <Grid item xs={12}>
                 <LoadingButton
                     fullWidth
@@ -120,11 +130,6 @@ export default function CreateTripForm() {
 
         </Grid>
     )
-    // const content = isLoading || isRegisterLoading? 'loading...' : (
-    //     <CustomModal title={titleText} Content={RenderForm}/>
-    // )
 
-    const content = <CustomModal title={titleText} Content={RenderForm}/>
-
-    return content
+    return <CustomModal title={titleText} Content={RenderForm} error={error?.data?.message}/>
 }
