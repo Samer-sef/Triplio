@@ -2,6 +2,8 @@ import { useState, useEffect } from "react"
 
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import Typography from '@mui/material/Typography';
 
 import TripCard from '../features/trips/TripCard'
 import CustomFab from './CustomFab'
@@ -63,9 +65,19 @@ const Home = () => {
                             <InfiniteScroll
                                 dataLength={trips.length}
                                 next={() => dispatch(setPage({page: page+1}))}
+                                style={{overflow: 'hidden'}} //Bug fix for scrollbar that shows when scrolling fast.
                                 hasMore={trips.length < count}
-                                loader={'loading...'}
-                                endMessage='No More Trips!'
+                                loader={
+                                    <Box
+                                        display="flex"
+                                        justifyContent="center"
+                                    >
+                                        <CircularProgress/>
+                                    </Box>
+                                }
+                                endMessage={
+                                    <Typography p={3} sx={{textAlign: 'center'}}>No more trips to display!</Typography>
+                                }
                             >
                                 {trips.map((trip) => (
                                     <TripCard trip={trip}/>

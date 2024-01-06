@@ -14,6 +14,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
 const LoginRegisterForm = () => {
@@ -29,8 +30,10 @@ const LoginRegisterForm = () => {
     const navigate = useNavigate()
     const location = useLocation();
 
-    const [login, { isLoginLoading }] = useLoginMutation()
-    const [register, { isRegisterLoading }] = useRegisterMutation()
+    const [login, { isLoading: isLoginLoading }] = useLoginMutation()
+    const [register, { isLoading: isRegisterLoading }] = useRegisterMutation()
+    const isLoading = isLoginLoading || isRegisterLoading
+    console.log('isLoadingisLoading', isLoading)
     const dispatch = useDispatch()
 
     const isLogin = location.pathname === '/login'
@@ -149,22 +152,19 @@ const LoginRegisterForm = () => {
                 } label="Remember this device." />
             </Grid>
             <Grid item xs={12}>
-                <Button
+                <LoadingButton
                     fullWidth
+                    loading={isLoading}
                     variant="contained"
                     onClick={handleSubmit}
                 >
                     {titleText}
-                </Button>
+                </LoadingButton>
             </Grid>
         </Grid>
-
     )
 
-    const content = isLoginLoading || isRegisterLoading? 'loading...' : (
-        <CustomModal title={titleText} Content={RenderForm}/>
-    )
+    return <CustomModal title={titleText} Content={RenderForm}/>
 
-    return content
 }
 export default LoginRegisterForm

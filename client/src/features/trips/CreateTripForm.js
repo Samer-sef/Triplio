@@ -13,9 +13,10 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 
-export default function CreateTripForm(props) {
+export default function CreateTripForm() {
 
     const titleText = 'Create a trip: '
     const userEmail = useSelector(selectCurrentEmail)
@@ -107,13 +108,14 @@ export default function CreateTripForm(props) {
             </Grid>
 
             <Grid item xs={12}>
-                <Button
+                <LoadingButton
                     fullWidth
+                    loading={isLoading}
                     variant="contained"
                     onClick={handleSubmit}
                     >
                     Create
-                </Button>
+                </LoadingButton>
             </Grid>
 
         </Grid>
