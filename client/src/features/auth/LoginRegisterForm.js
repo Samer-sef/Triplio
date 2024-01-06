@@ -9,13 +9,8 @@ import { useRegisterMutation } from './registerApiSlice'
 
 import CustomModal from '../../components/CustomModal'
 
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+import { Grid, TextField, Checkbox, Alert, FormControlLabel } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import Alert from '@mui/material/Alert';
 
 
 const LoginRegisterForm = () => {

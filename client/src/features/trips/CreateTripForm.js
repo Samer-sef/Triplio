@@ -1,20 +1,15 @@
 import { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { useAddNewTripMutation } from "./tripApiSlice"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { selectCurrentEmail } from "../auth/authSlice"
 import { setPage, selectPage } from "../trips/pageSlice"
-import { useDispatch } from 'react-redux'
 
 import CustomModal from '../../components/CustomModal'
 
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Grid, TextField, Typography, Alert } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import Alert from '@mui/material/Alert';
 
 
 export default function CreateTripForm() {

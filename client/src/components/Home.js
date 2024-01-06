@@ -1,9 +1,4 @@
-import { useState, useEffect } from "react"
-
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
+import { Grid, Box, CircularProgress, Typography } from '@mui/material';
 
 import TripCard from '../features/trips/TripCard'
 import CustomFab from './CustomFab'
@@ -11,8 +6,7 @@ import CustomFab from './CustomFab'
 import { useNavigate, Outlet } from 'react-router-dom'
 
 import { useGetTripsQuery } from "../features/trips/tripApiSlice"
-import { useSelector } from "react-redux"
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux"
 import { selectPage, setPage } from '../features/trips/pageSlice'
 
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -80,7 +74,7 @@ const Home = () => {
                                 }
                             >
                                 {trips.map((trip) => (
-                                    <TripCard trip={trip}/>
+                                    <TripCard key={trip._id} trip={trip}/>
                                 ))}
                         </InfiniteScroll>
                     }
