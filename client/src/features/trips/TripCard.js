@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 
 export default function TripCard({trip}) {
-    const {name, description, location, date: tripDate, createdAt } = trip
+    const {name, description, location, date: tripDate, createdAt, username: createdBy } = trip
 
     const createdAtReadable = dayjs(createdAt).format('YYYY-MM-DD HH:mm')
 
@@ -18,7 +18,7 @@ export default function TripCard({trip}) {
                     </Grid>
                     <Grid item>
                         <Typography>{name + ' - ' + createdAtReadable}</Typography>
-                        <Typography>samer sefrani</Typography>
+                        <Typography>{createdBy}</Typography>
                     </Grid>
                 </Grid>
                     

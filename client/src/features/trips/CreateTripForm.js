@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 
 import { useAddNewTripMutation } from "./tripApiSlice"
 import { useSelector, useDispatch } from "react-redux"
-import { selectCurrentUserId } from "../auth/authSlice"
+import { selectCurrentUserId, selectCurrentUsername } from "../auth/authSlice"
 import { setPage, selectPage } from "../trips/pageSlice"
 
 import CustomModal from '../../components/CustomModal'
@@ -21,6 +21,7 @@ export default function CreateTripForm() {
 
     const titleText = 'Create a trip: '
     const userId = useSelector(selectCurrentUserId)
+    const username = useSelector(selectCurrentUsername)
     const page = useSelector(selectPage)
 
     const [addNewNote, {
@@ -52,7 +53,7 @@ export default function CreateTripForm() {
 
     const handleSubmit = async () => {
         try{
-            await addNewNote({ name, location, description, date, userId })
+            await addNewNote({ name, location, description, date, userId, username })
         } catch (err) {
             console.log('CreateTripForm error', err)
         }

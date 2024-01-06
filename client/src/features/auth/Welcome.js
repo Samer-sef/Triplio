@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux"
-import { selectCurrentUser, selectCurrentToken } from "./authSlice"
+import { selectCurrentUsername, selectCurrentToken } from "./authSlice"
 import { Link } from "react-router-dom"
 
 const Welcome = () => {
-    const user = useSelector(selectCurrentUser)
+    const user = useSelector(selectCurrentUsername)
     const token = useSelector(selectCurrentToken)
 
     const welcome = user ? `Welcome ${user}!` : 'Welcome!'

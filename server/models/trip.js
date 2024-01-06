@@ -9,6 +9,7 @@ const TripSchema = new mongoose.Schema(
         date: {type: String, required: true},
         rating: {type: Number, required: false},
         userId: {type: String, required: true},
+        username: {type: String, required: true},
         // images: [''], TODO:: support uploading images and saving their urls
     },
     { collection: 'trips', timestamps: true }
