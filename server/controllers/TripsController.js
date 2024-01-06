@@ -3,13 +3,13 @@ const mongoose = require('mongoose')
 
 
 const CreateTrip = async (req, res) => {
-    const { name, description, location, length, date, rating, userEmail } = req.body
+    const { name, description, location, length, date, rating, userId } = req.body
 
-    // if (!name || !description || !location || !length || !date || !date || !rating) {
-    //     return res.status(400).json({ message: 'All fields are required' })
-    // }
+    if (!name || !description || !date || !userId) {
+        return res.status(400).json({ message: 'All fields are required' })
+    }
 
-    const trip = await Trip.create({ name, description, location, length, date, rating, userEmail })
+    const trip = await Trip.create({ name, description, location, length, date, rating, userId })
 
     if (trip) {
         return res.status(201).json({ message: 'New trip created' })
@@ -47,11 +47,11 @@ const GetAllTrips = async (req, res) => {
 
 
 const UpdateTrip = async (req, res) => {
-    const { name, description, location, length, date, rating, id, userEmail } = req.body
+    const { name, description, location, length, date, rating, id, userId } = req.body
 
-    // if (!name || !description || !location || !length || !date || !date || !rating) {
-    //     return res.status(400).json({ message: 'All fields are required' })
-    // }
+    if (!name || !description || !date || !userId) {
+        return res.status(400).json({ message: 'All fields are required' })
+    }
 
     const trip = await Trip.findById(id).exec()
 
@@ -66,7 +66,7 @@ const UpdateTrip = async (req, res) => {
     note.length = length || note.length
     note.date = date || note.date
     note.rating = rating || note.rating
-    note.userEmail = rating || note.userEmail
+    note.userId = rating || note.userId
 
     const updatedTrip = await note.save()
 

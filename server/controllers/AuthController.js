@@ -41,8 +41,10 @@ const handleLogin = async (req, res) => {
     foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
     const result = await foundUser.save();
 
+    let userId = foundUser._id
+
     res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-    res.json({ accessToken, username, email });
+    res.json({ accessToken, username, userId });
 }
 
 module.exports = { handleLogin };

@@ -36,9 +36,11 @@ const handleNewUser = async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        let userId = createdUser._id
+
         console.log(createdUser);
         res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-        res.json({ accessToken, username, email });
+        res.json({ accessToken, username, userId });
     } catch (err) {
         console.log(err);
         res.status(500).json({ 'message': err.message });

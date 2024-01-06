@@ -41,6 +41,7 @@ const handleRefreshToken = async (req, res) => {
             if (err || foundUser.email !== decoded.email) return res.sendStatus(403);
 
             let email = foundUser.email
+            let userId = foundUser._id
 
             // Refresh token was still valid
             const roles = Object.values(foundUser.roles);
@@ -66,7 +67,7 @@ const handleRefreshToken = async (req, res) => {
             const result = await foundUser.save();
 
             res.cookie('jwt', newRefreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 20 * 24 * 60 * 60 * 1000 });
-            res.json({ accessToken, username, email })
+            res.json({ accessToken, username, userId })
         }
     );
 }
