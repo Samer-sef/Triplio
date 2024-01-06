@@ -12,7 +12,7 @@ export const tripApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getTrips: builder.query({
             query: (args) => ({
-                url: `/trips?skip=${args.page * 5}`,
+                url: `/trips?page=${args.page}&limit=${10}`,
                 validateStatus: (response, result) => {
                     return response.status === 200 && !result.isError
                 },
@@ -25,9 +25,8 @@ export const tripApiSlice = apiSlice.injectEndpoints({
             merge: (currentCache, newItems, options) => {
                 const args = options.arg
                 const page = args.page
-                const isCreateTripCall = args.isCreateTripCall
-                if(page === 0 && isCreateTripCall){ // temporary solution until RTK release a new fix for infinity scroll support...
-                    currentCache.trips = [newItems.trips[0], ...currentCache.trips]
+                if(page === 0 || !page){ // temporary solution until RTK release a new fix for infinity scroll support...
+                    currentCache.trips = [...newItems.trips]
                 }else{
                     currentCache.trips = [...currentCache.trips, ...newItems.trips]
                 }
@@ -44,8 +43,8 @@ export const tripApiSlice = apiSlice.injectEndpoints({
             //     return tripsAdapter.setAll(initialState, responseData)
             // },
             providesTags: (result, error, arg) => {
-                let trips = result.trips
-                if (trips?.length) {
+                let trips = result?.trips
+                if (trips?.length > 0) {
                     let x = [
                         { type: 'Trip', id: 'LIST' },
                         ...trips.map(trip => ({ type: 'Trip', id: trip._id }))

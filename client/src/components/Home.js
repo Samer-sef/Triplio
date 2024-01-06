@@ -1,7 +1,4 @@
-import { useState, useEffect } from "react"
-
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
+import { Grid, Box, CircularProgress, Typography, Divider } from '@mui/material';
 
 import TripCard from '../features/trips/TripCard'
 import CustomFab from './CustomFab'
@@ -9,27 +6,24 @@ import CustomFab from './CustomFab'
 import { useNavigate, Outlet } from 'react-router-dom'
 
 import { useGetTripsQuery } from "../features/trips/tripApiSlice"
-import { useSelector } from "react-redux"
-import { useDispatch } from 'react-redux'
-import { selectPage, setPage, selectIsCreateTripCall } from '../features/trips/pageSlice'
+import { useSelector, useDispatch } from "react-redux"
+import { selectPage, setPage } from '../features/trips/pageSlice'
 
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 
 const Home = () => {
 
-    let page = useSelector(selectPage)
-    let isCreateTripCall = useSelector(selectIsCreateTripCall)
+    const page = useSelector(selectPage)
     
     const {
         data,
-        currentData,
         isLoading,
         isSuccess,
         isError,
         error
-    } = useGetTripsQuery({page, isCreateTripCall}, {
-        // pollingInterval: 15000,
+    } = useGetTripsQuery({page}, {
+        pollingInterval: 60000 * 3, // Automatically refresh the trips on home page every 3 minutes.
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true
     })
@@ -38,12 +32,48 @@ const Home = () => {
     const dispatch = useDispatch()
 
     const handleCreateTrip = () => {
-        navigate(`/createTrip`) //TODO:: check for login
+        navigate(`/createTrip`)
+    }
+
+    let content
+
+    if(isLoading){
+        content = ('loading')
+    }
+
+    if(isError){
+        content = (<Typography p={3}>{error.data.message + ' :/'}</Typography>)
+    }
+
+    if(isSuccess){
+        const { count, trips } = data
+        content = (
+            <InfiniteScroll
+                dataLength={trips.length}
+                next={() => dispatch(setPage({page: page+1}))}
+                style={{overflow: 'hidden'}} //Bug fix for scrollbar that shows when scrolling fast.
+                hasMore={trips.length < count}
+                loader={
+                    <Box
+                        display="flex"
+                        justifyContent="center">
+                        <CircularProgress/>
+                    </Box>
+                }
+                endMessage={
+                    <Box pt={8}>
+                        <Divider variant="middle"/>
+                        <Typography p={3} sx={{textAlign: 'center'}}>No more trips to display!</Typography>
+                    </Box>
+                }
+            >
+                {trips.map((trip) => (
+                    <TripCard key={trip._id} trip={trip}/>
+                ))}
+            </InfiniteScroll>)
     }
     
 
-if(isSuccess){
-    const { count, trips } = data
     return(
         <Grid container>
             <Box 
@@ -57,18 +87,11 @@ if(isSuccess){
                     justifyContent="center"
                     xs={11}
                     md={5}
-                    mt={5}
+                    pt={5}
                 >
 
-                {!isLoading && <InfiniteScroll dataLength={trips?.length} next={() => dispatch(setPage({page: page+1, isCreateTripCall: false}))} hasMore={trips?.length < count} loader={'loading...'}>
-                    <ul className='bg-teal-500'>
-                    {trips.map((trip) => (
-                        <TripCard trip={trip}/>
-                    ))}
-                    </ul>
-                </InfiniteScroll>}
+                { content }
 
-                {isLoading === true && <>Loading</>}
                 </Grid>
             </Box>
             <CustomFab onClick={() => handleCreateTrip()}/>
@@ -76,7 +99,5 @@ if(isSuccess){
         </Grid>
     )
 }
-}
-
 
 export default Home

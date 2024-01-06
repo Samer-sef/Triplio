@@ -1,24 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import CssBaseline from '@mui/material/CssBaseline';
-import useScrollTrigger from '@mui/material/useScrollTrigger';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Slide from '@mui/material/Slide';
-import Fab from '@mui/material/Fab';
+
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import Fade from '@mui/material/Fade';
 import AdbIcon from '@mui/icons-material/Adb';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
+import { AppBar, Toolbar, Typography, CssBaseline, useScrollTrigger, Box, Slide, Fab, Fade, IconButton, Menu, Avatar, Button, Tooltip, MenuItem } from '@mui/material';
 
 import { selectCurrentUser } from "../features/auth/authSlice"
 import { useSendLogoutMutation } from '../features/auth/authApiSlice'
@@ -35,6 +20,7 @@ const loggedInPages = {
   'Account Settings': 'settings',
   'Logout': 'logout',
 }
+
 
 function HideOnScroll(props) {
   const { children, window } = props;

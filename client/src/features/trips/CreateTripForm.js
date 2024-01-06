@@ -1,24 +1,27 @@
 import { useState, useEffect } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 
 import { useAddNewTripMutation } from "./tripApiSlice"
-import { useSelector } from "react-redux"
-import { selectCurrentEmail } from "../auth/authSlice"
-import {setPage} from "../trips/pageSlice"
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux"
+import { selectCurrentUserId } from "../auth/authSlice"
+import { setPage, selectPage } from "../trips/pageSlice"
 
 import CustomModal from '../../components/CustomModal'
 
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Grid, TextField, Typography, Alert } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+
+import dayjs from 'dayjs'
 
 
-export default function CreateTripForm(props) {
+export default function CreateTripForm() {
 
     const titleText = 'Create a trip: '
-    const userEmail = useSelector(selectCurrentEmail)
+    const userId = useSelector(selectCurrentUserId)
+    const page = useSelector(selectPage)
 
     const [addNewNote, {
         isLoading,
@@ -36,20 +39,25 @@ export default function CreateTripForm(props) {
     }, [isSuccess, navigate])
 
     const [name, setName] = useState('')
-    const [destination, setDestination] = useState('')
+    const [location, setLocation] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
 
     const handleTripNameInput = (e) => setName(e.target.value)
-    const handleDestinationInput = (e) => setDestination(e.target.value)
+    const handleLocationInput = (e) => setLocation(e.target.value)
     const handleDescriptionInput = (e) => setDescription(e.target.value)
-    const handleDateInput = (e) => setDate(e.target.value)
+    const handleDateInput = (date) => setDate(dayjs(date).format('MM/DD/YYYY'))
 
     const dispatch = useDispatch()
 
     const handleSubmit = async () => {
-        await addNewNote({ name, destination, description, date, userEmail })
-        dispatch(setPage({ page: 0, isCreateTripCall: true })) //Send a signal to the getTrips query after reseting the page number.
+        try{
+            await addNewNote({ name, location, description, date, userId })
+        } catch (err) {
+            console.log('CreateTripForm error', err)
+        }
+        
+        dispatch(setPage({ page: page === 0 ? undefined : 0 })) //reset the page number and ensure the previous state != the next one.
     }
 
     const RenderForm = (
@@ -67,12 +75,12 @@ export default function CreateTripForm(props) {
             </Grid>
 
             <Grid item xs={12}>
-                <Typography id="modal-modal-title" variant="p" mb={0}>Destination</Typography>
+                <Typography id="modal-modal-title" variant="p" mb={0}>Location</Typography>
                 <TextField
                     fullWidth
-                    onChange={handleDestinationInput}
+                    onChange={handleLocationInput}
                     required
-                    id="outlined-destination-input"
+                    id="outlined-location-input"
                     placeholder="Where to?"
                     type="text"
                 />
@@ -94,34 +102,40 @@ export default function CreateTripForm(props) {
             </Grid>
 
             <Grid item xs={12}>
+                
+                {
+                //     <TextField
+                //     fullWidth
+                //     onChange={handleDateInput}
+                //     required
+                //     id="outlined-tripname-input"
+                //     placeholder="e.g., 2024/01/01"
+                //     type="text"
+                // />
+            }
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Typography id="modal-modal-title" variant="p" mb={0}>Trip date</Typography>
-                <TextField
-                    fullWidth
-                    onChange={handleDateInput}
-                    required
-                    id="outlined-tripname-input"
-                    placeholder="e.g., 2024/01/01"
-                    type="text"
-                />
+                    <DatePicker onChange={handleDateInput} slotProps={{ textField: { fullWidth: true } }}/>
+                </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12} sx={{display: { xs: !isError && 'none' }}}>
+                <Alert severity="error">{error?.data?.message}</Alert>
             </Grid>
 
             <Grid item xs={12}>
-                <Button
+                <LoadingButton
                     fullWidth
+                    loading={isLoading}
                     variant="contained"
                     onClick={handleSubmit}
                     >
                     Create
-                </Button>
+                </LoadingButton>
             </Grid>
 
         </Grid>
     )
-    // const content = isLoading || isRegisterLoading? 'loading...' : (
-    //     <CustomModal title={titleText} Content={RenderForm}/>
-    // )
 
-    const content = <CustomModal title={titleText} Content={RenderForm}/>
-
-    return content
+    return <CustomModal title={titleText} Content={RenderForm} error={error?.data?.message}/>
 }

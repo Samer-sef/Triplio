@@ -1,5 +1,6 @@
 import { apiSlice } from "../../app/api/apiSlice"
 import { logOut, setCredentials } from "./authSlice"
+import { resetPage } from "../trips/pageSlice"
 
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -21,6 +22,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                     const { data } = await queryFulfilled
                     console.log(data)
                     dispatch(logOut())
+                    dispatch(resetPage()) // Reset the local state of the home screen
                     setTimeout(() => {
                         dispatch(apiSlice.util.resetApiState())
                     }, 1000)
@@ -38,8 +40,8 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 try {
                     const { data } = await queryFulfilled
                     console.log(data)
-                    const { accessToken, username, email } = data
-                    dispatch(setCredentials({ accessToken, username, email}))
+                    const { accessToken, username, userId } = data
+                    dispatch(setCredentials({ accessToken, username, userId}))
                 } catch (err) {
                     console.log(err)
                 }
