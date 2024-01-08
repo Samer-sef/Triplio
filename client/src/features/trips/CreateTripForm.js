@@ -7,8 +7,10 @@ import { selectCurrentUserId, selectCurrentUsername } from "../auth/authSlice"
 import { setPage, selectPage } from "../trips/pageSlice"
 
 import CustomModal from '../../components/CustomModal'
+import {ImageListCustom} from '../../components/ImageListCustom'
 
-import { Grid, TextField, Typography, Alert } from '@mui/material';
+import { Grid, TextField, Typography, Alert, IconButton } from '@mui/material';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -43,22 +45,58 @@ export default function CreateTripForm() {
     const [location, setLocation] = useState('')
     const [description, setDescription] = useState('')
     const [date, setDate] = useState('')
-
+    const [images, setImages] = useState()
+    const [imagePreviews, setImagePreviews] = useState([])
+    
     const handleTripNameInput = (e) => setName(e.target.value)
     const handleLocationInput = (e) => setLocation(e.target.value)
     const handleDescriptionInput = (e) => setDescription(e.target.value)
     const handleDateInput = (date) => setDate(dayjs(date).format('MM/DD/YYYY'))
+    const handleUpload = (e) => {
+        const files = e.target.files
+        setImages(files)
+        structureImages(files)
+    }
 
     const dispatch = useDispatch()
 
+    const structureImages = (imgs) => {
+        let imagesList = []
+        Array.from(imgs).forEach(image => {
+            imagesList = [
+                ...imagesList,
+                {
+                    url: URL.createObjectURL(image),
+                    key: image.name
+                }
+            ]
+        });
+        setImagePreviews(imagesList)
+    }
+
+    const addUserInputToForm = async () => {
+        const formData = new FormData();
+        formData.append('name', name)
+        formData.append('location', location)
+        formData.append('description', description)
+        formData.append('date', date)
+        formData.append('username', username)
+        formData.append('userId', userId)
+        Array.from(images).forEach(image => {
+            formData.append("image", image);
+        });
+        return formData
+    }
+
     const handleSubmit = async () => {
         try{
-            await addNewNote({ name, location, description, date, userId, username })
+            await addNewNote(await addUserInputToForm())
         } catch (err) {
             console.log('CreateTripForm error', err)
         }
-        
-        dispatch(setPage({ page: page === 0 ? undefined : 0 })) //reset the page number and ensure the previous state != the next one.
+
+         //reset the page number and ensure the previous state != the next one ONLY if the addNewNote succeeds.
+        isSuccess && dispatch(setPage({ page: page === 0 ? undefined : 0 }))
     }
 
     const RenderForm = (
@@ -103,21 +141,33 @@ export default function CreateTripForm() {
             </Grid>
 
             <Grid item xs={12}>
-                
-                {
-                //     <TextField
-                //     fullWidth
-                //     onChange={handleDateInput}
-                //     required
-                //     id="outlined-tripname-input"
-                //     placeholder="e.g., 2024/01/01"
-                //     type="text"
-                // />
-            }
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <Typography id="modal-modal-title" variant="p" mb={0}>Trip date</Typography>
                     <DatePicker onChange={handleDateInput} slotProps={{ textField: { fullWidth: true } }}/>
                 </LocalizationProvider>
+            </Grid>
+
+            <Grid item xs={12}>
+                <TextField
+                    variant="standard"          
+                    type="text"
+                    InputProps={{
+                        endAdornment: (
+                        <IconButton component="label">
+                            <FileUploadIcon />
+                            <input
+                                styles={{display:"none"}}
+                                type="file"
+                                hidden
+                                multiple
+                                onChange={handleUpload}
+                                name="[licenseFile]"
+                                />
+                        </IconButton>
+                        ),
+                    }}
+                    />
+                { imagePreviews?.length && <ImageListCustom cols={4} imageList={imagePreviews}/> }
             </Grid>
 
             <Grid item xs={12} sx={{display: { xs: !isError && 'none' }}}>

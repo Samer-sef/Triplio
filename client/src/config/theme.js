@@ -1,6 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import { green, orange } from '@mui/material/colors';
-
 
 export const theme = () => {
     return createTheme({

@@ -4,6 +4,8 @@ import {
 } from "@reduxjs/toolkit";
 import { apiSlice } from "../../app/api/apiSlice"
 
+import {generateAwsS3Url} from '../../config/utils'
+
 
 const tripsAdapter = createEntityAdapter()
 const initialState = tripsAdapter.getInitialState()
@@ -35,13 +37,18 @@ export const tripApiSlice = apiSlice.injectEndpoints({
             forceRefetch({ currentArg, previousArg }) {
               return currentArg !== previousArg;
             },
-            // transformResponse: responseData => {
-            //     // const loadedTrips = responseData.map(trip => {
-            //     //     trip.id = trip._id
-            //     //     return trip
-            //     // });
-            //     return tripsAdapter.setAll(initialState, responseData)
-            // },
+            transformResponse: responseData => {
+                responseData.trips.map(trip => {
+                    trip.images = trip.images.map(key => {
+                            return {
+                                key,
+                                url: generateAwsS3Url(key)
+                            }
+                    })
+                    return trip
+                });
+                return responseData
+            },
             providesTags: (result, error, arg) => {
                 let trips = result?.trips
                 if (trips?.length > 0) {
@@ -57,13 +64,12 @@ export const tripApiSlice = apiSlice.injectEndpoints({
             query: initialTrip => ({
                 url: '/trips',
                 method: 'POST',
-                body: {
-                    ...initialTrip,
-                }
+                body: initialTrip,
+                formData: true,
             }),
             // invalidatesTags: [
             //     { type: 'Trip', id: "LIST" }
-            // ]
+            // ],
         }),
         updateTrip: builder.mutation({
             query: initialTrip => ({

@@ -5,11 +5,13 @@ const mongoose = require('mongoose')
 const CreateTrip = async (req, res) => {
     const { name, description, location, length, date, rating, userId, username } = req.body
 
+    let images = req.files?.length > 0 ? req.files.map(file => file.key) : []
+
     if (!name || !description || !date || !userId || !location || !username ) {
         return res.status(400).json({ message: 'All fields are required' })
     }
 
-    const trip = await Trip.create({ name, description, location, length, date, rating, userId })
+    const trip = await Trip.create({ name, description, location, length, date, rating, userId, username, images })
 
     if (trip) {
         return res.status(201).json({ message: 'New trip created' })
