@@ -12,8 +12,8 @@ require("dotenv").config()
 
 app.use(credentials);
 app.use(cors(corsOptions));
-app.use(express.urlencoded({ extended: false })) //to handle urlencoded form data
 app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(require('./routes'))
 app.use(errorHandler)

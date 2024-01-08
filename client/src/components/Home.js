@@ -42,11 +42,13 @@ const Home = () => {
     }
 
     if(isError){
-        content = (<Typography p={3}>{error.data.message + ' :/'}</Typography>)
+        console.log('error', error)
+        content = (<Typography p={3}>{error.data?.message + ' :/'}</Typography>)
     }
 
     if(isSuccess){
         const { count, trips } = data
+        console.log('datadatadata',data )
         content = (
             <InfiniteScroll
                 dataLength={trips.length}

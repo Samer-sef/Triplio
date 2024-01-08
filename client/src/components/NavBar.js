@@ -5,7 +5,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import AdbIcon from '@mui/icons-material/Adb';
 import { AppBar, Toolbar, Typography, CssBaseline, useScrollTrigger, Box, Slide, Fab, Fade, IconButton, Menu, Avatar, Button, Tooltip, MenuItem } from '@mui/material';
 
-import { selectCurrentUser } from "../features/auth/authSlice"
+import { selectCurrentUsername } from "../features/auth/authSlice"
 import { useSendLogoutMutation } from '../features/auth/authApiSlice'
 import { useSelector } from "react-redux"
 
@@ -179,7 +179,7 @@ const RenderLoggedOutUserOptions = () => {
 }
 
 const RenderPages = () => {
-    const user = useSelector(selectCurrentUser)
+    const user = useSelector(selectCurrentUsername)
     return user ? <RenderLoggedInUserOptions/> : <RenderLoggedOutUserOptions/>
 }
 
